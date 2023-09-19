@@ -11,28 +11,20 @@ int _printf(const char *format, ...) {
     while (*format) {
         if (*format == '%') {
             format++;
-            switch (*format) {
-                case 'c': {
-                    char c = (char) va_arg(args, int);
-                    putchar(c);
+            if (*format == 'c') {
+                int c = va_arg(args, int);
+                putchar(c);
+                count++;
+            } else if (*format == 's') {
+                char *s = va_arg(args, char*);
+                while (*s) {
+                    putchar(*s);
+                    s++;
                     count++;
-                    break;
                 }
-                case 's': {
-                    char *str = va_arg(args, char*);
-                    while (*str) {
-                        putchar(*str);
-                        str++;
-                        count++;
-                    }
-                    break;
-                }
-                case '%':
-                    putchar('%');
-                    count++;
-                    break;
-                default:
-                    break;
+            } else if (*format == '%') {
+                putchar('%');
+                count++;
             }
         } else {
             putchar(*format);
@@ -42,11 +34,17 @@ int _printf(const char *format, ...) {
     }
 
     va_end(args);
+
     return count;
 }
 
 int main() {
-    _printf("Hello, %s! The character is %c. This is a percent sign: %%.\n", "world", 'A');
+    char str[] = "Hello, World!";
+    int num = 42;
+
+    int result = _printf("String: %s, Number: %d, Character: %c, Percent: %%\n", str, num, 'A');
+    printf("\nTotal characters printed: %d\n", result);
+
     return 0;
 }
 
